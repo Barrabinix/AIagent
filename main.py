@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -16,11 +17,15 @@ def main():
         print("Error: No prompt provided.\nUsage: uv run main.py \"Your prompt here\"")
         sys.exit(1)
     
-    prompt = " ".join(sys.argv[1:])
+    user_prompt = " ".join(sys.argv[1:])
+
+    messages = [
+        types.Content(role="user", parts=[types.Part(text=user_prompt)]),
+    ]
 
     response = client.models.generate_content(
     	model = "gemini-2.0-flash-001",
-    	contents = prompt
+    	contents = messages
 	)
 
     print(response.text)
