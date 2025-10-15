@@ -14,10 +14,18 @@ def main():
     # Use the client to get a response
 
     if len(sys.argv) < 2:
-        print("Error: No prompt provided.\nUsage: uv run main.py \"Your prompt here\"")
+        print("Error: No prompt provided.\nUsage: uv run main.py \"Your prompt here\" [--verbose]"])
         sys.exit(1)
     
+    # Detect and remove --verbose flag
+    verbose = False
+
+    if "--verbose" in sys.argv:
+        verbose = True
+        sys.argv.remove("--verbose")
+   
     user_prompt = " ".join(sys.argv[1:])
+
 
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
@@ -29,10 +37,12 @@ def main():
 	)
 
     print(response.text)
-    
+                   
     # Print token usage
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    if verbose:
+        print(f"User promt: {user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
 if __name__ == "__main__":
     main()
